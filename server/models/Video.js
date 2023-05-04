@@ -14,29 +14,34 @@ const VideoSchema = new mongoose.Schema({
     type: String,
   },
   file: {
-    type: File,
-    required: true,
+    type: Buffer,
+  },
+  fileSize: {
+    type: Number,
+  },
+  mimetype: {
+    type: String,
   },
   owner: {
     type: mongoose.Schema.ObjectId,
     required: true,
     ref: 'Account',
   },
-  views: {
-    type: Number,
-    min: 0,
-  },
+  // views: {
+  //   type: Number,
+  //   min: 0,
+  // },
   createdDate: {
     type: Date,
     default: Date.now,
   },
 });
 
-VideoSchema.statics.toAPI = (doc) => ({
-  title: doc.title,
-  description: doc.description,
-  file: doc.file,
-});
+// VideoSchema.statics.toAPI = (doc) => ({
+//   title: doc.title,
+//   description: doc.description,
+//   file: doc.file,
+// });
 
 const VideoModel = mongoose.model('Video', VideoSchema);
 module.exports = VideoModel;
