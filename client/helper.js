@@ -7,6 +7,7 @@ const handleError = (message) => {
     document.getElementById('roostMessage').classList.remove('hidden');
 };
 
+// Returns information about the user currently logged in
 const getLoginStatus = async (e) => {
     const response = await fetch('/loggedIn', {
         method: 'GET',
@@ -50,6 +51,7 @@ const sendPost = async (url, data, handler) => {
     }
 };
 
+// Posts a video to the server from the video creation form.
 const uploadVideo = async (url, data, handler) => {
     const response = await fetch(url, {
         method: 'POST',
@@ -72,6 +74,7 @@ const uploadVideo = async (url, data, handler) => {
     }
 };
 
+// Gets the specified video
 const getVideo = async (url, data) => {
     const response = await fetch(url, {
         method: 'GET',
@@ -96,6 +99,7 @@ const getVideo = async (url, data) => {
     return result;
 };
 
+// Receives specific information about a specified video.
 const getVideoData = async (url, data) => {
     const response = await fetch(url, {
         method: 'GET',
@@ -115,6 +119,7 @@ const getVideoData = async (url, data) => {
     return result;
 };
 
+// Gets account information from the specified user.
 const getAccount = async (url, data) => {
     const response = await fetch(url, {
         method: 'GET',
@@ -139,6 +144,7 @@ const getAccount = async (url, data) => {
     return result;
 };
 
+// Sends a request to the server that changes the user's premium account status.
 const togglePremium = async () => {
     const response = await fetch('/togglePremium', {
         method: 'POST',

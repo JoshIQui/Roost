@@ -2,6 +2,7 @@ const models = require('../models');
 
 const { Account } = models;
 
+// Returns if the user is logged in and aditional information about their account.
 const loggedIn = async (req, res) => {
   if (req.session.account) {
     const acc = await Account.findOne({ _id: req.session.account._id });
@@ -10,13 +11,16 @@ const loggedIn = async (req, res) => {
   return res.json({ loggedIn: false });
 };
 
+// Renders the login page handlebar.
 const loginPage = (req, res) => res.render('login');
 
+// Destroys the user session, preventing them from being considered logged-in.
 const logout = (req, res) => {
   req.session.destroy();
   res.redirect('/');
 };
 
+// Create a user session after authenticating the user's credentials.
 const login = (req, res) => {
   const username = `${req.body.username}`;
   const pass = `${req.body.pass}`;
@@ -36,6 +40,7 @@ const login = (req, res) => {
   });
 };
 
+// Sign's up the user and logs them in.
 const signup = async (req, res) => {
   const username = `${req.body.username}`;
   const pass = `${req.body.pass}`;
@@ -64,6 +69,7 @@ const signup = async (req, res) => {
   }
 };
 
+// Get information about the account and return it.
 const getAccount = async (req, res) => {
   if (!req.headers.id) {
     return res.status(404).json({ error: 'Account not found ' });
@@ -78,8 +84,10 @@ const getAccount = async (req, res) => {
   }
 };
 
+// Renders the account handlebar.
 const getAccountPage = (req, res) => res.render('account');
 
+// Toggles the account's premium status.
 const togglePremium = async (req, res) => {
   try {
     const acc = await Account.findOne({ _id: req.session.account._id });

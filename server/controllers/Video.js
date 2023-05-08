@@ -3,8 +3,10 @@ const File = require('../models/Filestore');
 
 const { Video } = models;
 
+// Renders the studio handlebar.
 const uploaderPage = async (req, res) => res.render('studio');
 
+// Saves the uploaded video to the server as a video model
 const uploadVideo = async (req, res) => {
   if (!req.body.title || !req.body.description || !req.files.file) {
     return res.status(400).json({ error: 'Title, description, and file are required!' });
@@ -36,16 +38,18 @@ const uploadVideo = async (req, res) => {
   }
 };
 
-const deleteVideo = async (req, res) => {
-  try {
-    await Video.deleteOne({ _id: req.body.id });
-    return res.status(200).json({ message: 'DELETED' });
-  } catch (err) {
-    console.log(err);
-    return res.status(500).json({ error: 'An error occured deleting this video!' });
-  }
-};
+// const deleteVideo = async (req, res) => {
+//   console.log(req.body.id);
+//   try {
+//     await Video.deleteOne({ _id: req.body.id });
+//     return res.status(200).json({ message: 'DELETED' });
+//   } catch (err) {
+//     console.log(err);
+//     return res.status(500).json({ error: 'An error occured deleting this video!' });
+//   }
+// };
 
+// Returns all videos owned by the session's account.
 const getOwnedVideos = async (req, res) => {
   try {
     const query = { owner: req.session.account._id };
@@ -57,6 +61,7 @@ const getOwnedVideos = async (req, res) => {
   }
 };
 
+// Returns all videos owned by the specified account.
 const getAccountVideos = async (req, res) => {
   try {
     const docs = await Video.find({ owner: req.headers.id }).select('title owner ownerName').lean().exec();
@@ -67,6 +72,7 @@ const getAccountVideos = async (req, res) => {
   }
 };
 
+// Gets the video information from an ID
 const getVideo = async (req, res) => {
   if (!req.headers.id) {
     return res.status(404).json({ error: 'Video not found' });
@@ -81,8 +87,10 @@ const getVideo = async (req, res) => {
   }
 };
 
+// Renders the viewer handlebar.
 const getVideoPage = async (req, res) => res.render('viewer');
 
+// Gets specific video information.
 const getPlayer = async (req, res) => {
   if (!req.query._id) {
     return res.status(400).json({ error: 'Missing file id!' });
@@ -118,5 +126,5 @@ module.exports = {
   getVideo,
   getVideoPage,
   getPlayer,
-  deleteVideo,
+  //deleteVideo,
 };

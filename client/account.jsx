@@ -2,6 +2,7 @@ const helper = require('./helper.js');
 const React = require('react');
 const ReactDOM = require('react-dom');
 
+// Calls a helper method to toggle premium account status
 const togglePremium = (e) => {
     e.preventDefault();
     helper.hideError();
@@ -9,6 +10,7 @@ const togglePremium = (e) => {
     helper.togglePremium();
 }
 
+// Determines the correct buttons to place on the navbar
 const LoginNav = (props) => {
     if (!props.loggedIn) {
         return (
@@ -26,6 +28,7 @@ const LoginNav = (props) => {
     }
 };
 
+// Displays the account owner's name and a button to toggle premium at any time for the current user.
 const AccountDetails = (props) => {
     const account = props.account;
 
@@ -37,6 +40,7 @@ const AccountDetails = (props) => {
     );
 };
 
+// Displays a list of all videos owned by this account.
 const VideoList = (props) => {
     if (props.videos.length === 0) {
         return (
@@ -65,6 +69,7 @@ const VideoList = (props) => {
     );
 };
 
+// Loads an updated list of videos this account owns from the server.
 const loadVideosFromServer = async (ID) => {
     const response = await fetch('/getAccountVideos', {
         method: 'GET',
@@ -83,14 +88,15 @@ const loadVideosFromServer = async (ID) => {
 }
 
 const init = async () => {
+    // Parse the search and remove the allocation of the window's name
     if (!window.location.search)
     {
         window.history.replaceState("Updated with user ID", "Title", 'account?_id=' + window.name);
     }
     window.name = "";
 
+    // Get information about the user's interaction with the client
     const userID = new URLSearchParams(window.location.search).get("_id");
-
     const account = await helper.getAccount('/user', { id: userID });
     const loggedIn = await helper.getLoginStatus();
 

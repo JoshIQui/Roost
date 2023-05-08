@@ -2,6 +2,7 @@ const helper = require('./helper.js');
 const React = require('react');
 const ReactDOM = require('react-dom');
 
+// Determines the correct buttons to place on the navbar
 const LoginNav = (props) => {
     if (!props.accLog.loggedIn) {
         return (
@@ -22,12 +23,14 @@ const LoginNav = (props) => {
     }
 };
 
+// An advertisement for users that do not have premium status accounts.
 const Advertisement = (props) => {
     return(
         <img id="adIMG" src="assets/img/advertisement.png"/>
     );
 }
 
+// The video player.
 const VideoPlayer = (props) => {
     const video = props.video;
     const ID = props.ID;
@@ -43,14 +46,15 @@ const VideoPlayer = (props) => {
 };
 
 const init = async () => {
+    // Parse the search and remove the allocation of the window's name
     if (!window.location.search)
     {
         window.history.replaceState("Updated with video ID", "Title", 'viewer?_id=' + window.name);
     }
     window.name = "";
 
+    // Get information about the user's interaction with the client
     const videoID = new URLSearchParams(window.location.search).get("_id");
-    
     const video = await helper.getVideoData('/getVideo', { id: videoID });
     const accLog = await helper.getLoginStatus();
 

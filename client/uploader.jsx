@@ -2,6 +2,7 @@ const helper = require('./helper.js');
 const React = require('react');
 const ReactDOM = require('react-dom');
 
+// Parse information from the video creation form to prepare a post request.
 const handleVideo = (e) => {
     e.preventDefault();
     helper.hideError();
@@ -20,26 +21,7 @@ const handleVideo = (e) => {
     return false;
 }
 
-const openVideo = (e) => {
-    e.preventDefault();
-    helper.hideError();
-
-    const id = e.target.querySelector('form').id;
-
-    helper.getVideo("/getVideo", { id: id });
-}
-
-const deleteVideo = (e) => {
-    e.preventDefault();
-    helper.hideError();
-
-    const id = e.target.querySelector('form').id;
-
-    helper.sendPost(e.target.action, { id: id }, loadOwnedVideosFromServer);
-
-    return false;
-}
-
+// The form for video creation.
 const VideoForm = (props) => {
     return (
         <form id="videoForm"
@@ -61,6 +43,7 @@ const VideoForm = (props) => {
     );
 };
 
+// Displays a list of all videos owned by this account.
 const VideoList = (props) => {
     if (props.videos.length === 0) {
         return (
@@ -72,19 +55,12 @@ const VideoList = (props) => {
 
     const videoNodes = props.videos.map(video => {
         return (
-            <div key={video._id} className="video" onClick={openVideo}>
-                <h3 className="videoTitle"> {video.title} </h3>
-                <h3 className="videoOwner"> {video.ownerName} </h3>
-                <form id={video._id}
-                    onSubmit={deleteVideo}
-                    name="X"
-                    action="/delete"
-                    method="POST"
-                    className="videoDelete"
-                >
-                    <input className="deleteVideo" type="submit" value="X" />
-                </form>
-            </div>
+            <a href={`/viewer?_id=${video._id}`}>
+                <div key={video._id} className="video">
+                    <h3 className="videoTitle"> {video.title} </h3>
+                    <h3 className="videoOwner"> {video.ownerName} </h3>
+                </div>
+            </a>
         );
     });
 
@@ -95,6 +71,7 @@ const VideoList = (props) => {
     );
 }
 
+// Loads an updated list of videos this account owns from the server.
 const loadOwnedVideosFromServer = async () => {
     const response = await fetch('/getOwnedVideos');
     const data = await response.json();

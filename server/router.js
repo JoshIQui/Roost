@@ -26,7 +26,7 @@ const router = (app) => {
   app.get('/uploader', mid.requiresLogin, controllers.Video.uploaderPage);
   app.post('/uploader', mid.requiresLogin, controllers.Video.uploadVideo);
 
-  app.post('/delete', mid.requiresLogin, controllers.Video.deleteVideo);
+  //app.post('/delete', mid.requiresLogin, controllers.Video.deleteVideo);
 
   app.get('/', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
 };

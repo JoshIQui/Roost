@@ -2,6 +2,7 @@ const helper = require('./helper.js');
 const React = require('react');
 const ReactDOM = require('react-dom');
 
+// Prepares a request to log a user in
 const handleLogin = (e) => {
     e.preventDefault();
     helper.hideError();
@@ -19,6 +20,7 @@ const handleLogin = (e) => {
     return false;
 }
 
+// Prepares a request to sign up a user
 const handleSignup = (e) => {
     e.preventDefault();
     helper.hideError();
@@ -42,6 +44,7 @@ const handleSignup = (e) => {
     return false;
 }
 
+// Displays the window for users to fill in a login form
 const LoginWindow = (props) => {
     return (
         <form id="loginForm"
@@ -60,6 +63,7 @@ const LoginWindow = (props) => {
     );
 };
 
+// Displays the window for users to fill in a signup form
 const SignupWindow = (props) => {
     return (
         <form id="signupForm"
