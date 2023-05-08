@@ -3,6 +3,8 @@ const mid = require('./middleware');
 
 const router = (app) => {
   app.get('/getOwnedVideos', mid.requiresLogin, controllers.Video.getOwnedVideos);
+  app.get('/getAccountVideos', controllers.Video.getAccountVideos);
+
   app.get('/getVideo', controllers.Video.getVideo);
   app.get('/viewer', controllers.Video.getVideoPage);
   app.get('/player', controllers.Video.getPlayer);
@@ -13,6 +15,13 @@ const router = (app) => {
   app.post('/signup', mid.requiresSecure, mid.requiresLogout, controllers.Account.signup);
 
   app.get('/logout', mid.requiresLogin, controllers.Account.logout);
+
+  app.get('/loggedIn', controllers.Account.loggedIn);
+
+  app.get('/account', controllers.Account.getAccountPage);
+  app.get('/user', controllers.Account.getAccount);
+
+  app.post('/togglePremium', mid.requiresLogin, controllers.Account.togglePremium);
 
   app.get('/uploader', mid.requiresLogin, controllers.Video.uploaderPage);
   app.post('/uploader', mid.requiresLogin, controllers.Video.uploadVideo);

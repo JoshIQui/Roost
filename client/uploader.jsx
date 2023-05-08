@@ -8,14 +8,14 @@ const handleVideo = (e) => {
 
     const title = e.target.querySelector('#videoTitle').value;
     const description = e.target.querySelector('#videoDescription').value;
-    const file = e.target.querySelector('#videoFile').files[0];
+    const file = e.target.querySelector('#videoFile').value;
 
     if (!title || !description || !file) {
         helper.handleError('All fields are required!');
         return false;
     }
 
-    helper.sendPost(e.target.action, { title, description, file }, loadOwnedVideosFromServer);
+    helper.uploadVideo(e.target.action, new FormData(e.target), loadOwnedVideosFromServer);
 
     return false;
 }
@@ -33,7 +33,9 @@ const deleteVideo = (e) => {
     e.preventDefault();
     helper.hideError();
 
-    helper.sendPost(e.target.action, { id: e.target.id }, loadOwnedVideosFromServer);
+    const id = e.target.querySelector('form').id;
+
+    helper.sendPost(e.target.action, { id: id }, loadOwnedVideosFromServer);
 
     return false;
 }
@@ -46,6 +48,7 @@ const VideoForm = (props) => {
             action="/uploader"
             method="POST"
             className="videoForm"
+            encType="multipart/form-data"
         >
             <label htmlFor="title">Title: </label>
             <input id="videoTitle" type="text" name="title" placeholder="Video Title" />
@@ -70,10 +73,8 @@ const VideoList = (props) => {
     const videoNodes = props.videos.map(video => {
         return (
             <div key={video._id} className="video" onClick={openVideo}>
-                <img src="/assets/img/domoface.jpeg" alt="thumbnail" className="thumbnail" />
-                <h3 className="videoTitle"> Name: {video.title} </h3>
-                <h3 className="videoOwner"> {video.owner} </h3>
-                <h3 className="videoViews"> {video.views} views </h3>
+                <h3 className="videoTitle"> {video.title} </h3>
+                <h3 className="videoOwner"> {video.ownerName} </h3>
                 <form id={video._id}
                     onSubmit={deleteVideo}
                     name="X"

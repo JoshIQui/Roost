@@ -4,7 +4,8 @@ module.exports = {
     entry: {
         uploader: './client/uploader.jsx',
         login: './client/login.jsx',
-        viewer: './client/viewer.jsx'
+        viewer: './client/viewer.jsx',
+        account: './client/account.jsx'
     },
     module: {
         rules: [

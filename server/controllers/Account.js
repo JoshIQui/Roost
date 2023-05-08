@@ -2,6 +2,14 @@ const models = require('../models');
 
 const { Account } = models;
 
+const loggedIn = async (req, res) => {
+  if (req.session.account) {
+    const acc = await Account.findOne({ _id: req.session.account._id });
+    return res.json({ loggedIn: true, accountID: req.session.account._id, premium: acc.premium });
+  }
+  return res.json({ loggedIn: false });
+};
+
 const loginPage = (req, res) => res.render('login');
 
 const logout = (req, res) => {
@@ -43,7 +51,7 @@ const signup = async (req, res) => {
 
   try {
     const hash = await Account.generateHash(pass);
-    const newAccount = new Account({ username, password: hash });
+    const newAccount = new Account({ username, password: hash, premium: false });
     await newAccount.save();
     req.session.account = Account.toAPI(newAccount);
     return res.json({ redirect: '/uploader' });
@@ -56,9 +64,40 @@ const signup = async (req, res) => {
   }
 };
 
+const getAccount = async (req, res) => {
+  if (!req.headers.id) {
+    return res.status(404).json({ error: 'Account not found ' });
+  }
+
+  try {
+    const user = await Account.findOne({ _id: req.headers.id });
+    return res.json({ user });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: 'An error occured!' });
+  }
+};
+
+const getAccountPage = (req, res) => res.render('account');
+
+const togglePremium = async (req, res) => {
+  try {
+    const acc = await Account.findOne({ _id: req.session.account._id });
+    req.session.account.premium = !acc.premium;
+    await Account.updateOne({ _id: req.session.account._id }, { $set: { premium: !acc.premium } });
+    return res.status(204);
+  } catch (err) {
+    return res.status(500).json({ error: 'An error occured!' });
+  }
+};
+
 module.exports = {
+  loggedIn,
   loginPage,
   login,
   logout,
   signup,
+  getAccount,
+  getAccountPage,
+  togglePremium,
 };

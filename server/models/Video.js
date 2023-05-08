@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const _ = require('underscore');
-const File = require('./Filestore.js')
 
 const setTitle = (title) => _.escape(title);
 
@@ -13,10 +12,10 @@ const VideoSchema = new mongoose.Schema({
   description: {
     type: String,
   },
-  file: {
+  data: {
     type: Buffer,
   },
-  fileSize: {
+  size: {
     type: Number,
   },
   mimetype: {
@@ -27,10 +26,10 @@ const VideoSchema = new mongoose.Schema({
     required: true,
     ref: 'Account',
   },
-  // views: {
-  //   type: Number,
-  //   min: 0,
-  // },
+  ownerName: {
+    type: String,
+    required: true,
+  },
   createdDate: {
     type: Date,
     default: Date.now,

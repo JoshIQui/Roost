@@ -6,25 +6,27 @@ const { Video } = models;
 const uploaderPage = async (req, res) => res.render('studio');
 
 const uploadVideo = async (req, res) => {
-  if (!req.body.title || !req.body.description || !req.body.file) {
+  if (!req.body.title || !req.body.description || !req.files.file) {
     return res.status(400).json({ error: 'Title, description, and file are required!' });
   }
 
-  const newFile = new File(req.body.file);
-
-  console.log(newFile);
+  const newFile = new File(req.files.file);
 
   const videoData = {
     title: req.body.title,
     description: req.body.description,
-    file: newFile,
+    name: newFile.name,
+    data: newFile.data,
+    size: newFile.size,
+    mimetype: newFile.mimetype,
     owner: req.session.account._id,
+    ownerName: req.session.account.username,
   };
 
   try {
     const newVideo = new Video(videoData);
     await newVideo.save();
-    return res.status(201).json({ title: newVideo.title, description: newVideo.description, file: newVideo.file });
+    return res.status(201).json({ message: 'Uploaded Successfully' });
   } catch (err) {
     console.log(err);
     if (err.code === 11000) {
@@ -47,7 +49,17 @@ const deleteVideo = async (req, res) => {
 const getOwnedVideos = async (req, res) => {
   try {
     const query = { owner: req.session.account._id };
-    const docs = await Video.find(query).select('title owner views').lean().exec();
+    const docs = await Video.find(query).select('title owner ownerName').lean().exec();
+    return res.json({ videos: docs });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: 'Error retrieving videos!' });
+  }
+};
+
+const getAccountVideos = async (req, res) => {
+  try {
+    const docs = await Video.find({ owner: req.headers.id }).select('title owner ownerName').lean().exec();
     return res.json({ videos: docs });
   } catch (err) {
     console.log(err);
@@ -56,8 +68,11 @@ const getOwnedVideos = async (req, res) => {
 };
 
 const getVideo = async (req, res) => {
+  if (!req.headers.id) {
+    return res.status(404).json({ error: 'Video not found' });
+  }
+
   try {
-    //console.log(req.headers.id);
     const docs = await Video.findOne({ _id: req.headers.id }).exec();
     return res.json({ player: docs, redirect: 'viewer' });
   } catch (err) {
@@ -69,19 +84,37 @@ const getVideo = async (req, res) => {
 const getVideoPage = async (req, res) => res.render('viewer');
 
 const getPlayer = async (req, res) => {
-  try{
-    const docs = await Video.findOne({ _id: req.headers.id }).exec();
-    return res.json({ player: docs });
+  if (!req.query._id) {
+    return res.status(400).json({ error: 'Missing file id!' });
+  }
+
+  let docs;
+
+  try {
+    docs = await Video.findOne({ _id: req.query._id }).exec();
   } catch (err) {
     console.log(err);
     return res.status(500).json({ error: 'Error retrieving video!' });
   }
+
+  if (!docs) {
+    return res.status(404).json({ error: 'Video not found!' });
+  }
+
+  res.set({
+    'Content-Type': docs.mimetype,
+    'Content-Length': docs.size,
+    'Content-Disposition': `filename="${docs.title}`,
+  });
+
+  return res.send(docs.data);
 };
 
 module.exports = {
   uploaderPage,
   uploadVideo,
   getOwnedVideos,
+  getAccountVideos,
   getVideo,
   getVideoPage,
   getPlayer,
