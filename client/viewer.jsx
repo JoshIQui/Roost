@@ -24,11 +24,11 @@ const LoginNav = (props) => {
 };
 
 // An advertisement for users that do not have premium status accounts.
-const Advertisement = (props) => {
-    return(
-        <img id="adIMG" src="assets/img/advertisement.png"/>
-    );
-}
+// const Advertisement = (props) => {
+//     return(
+//         <img id="adIMG" src="assets/img/advertisement.png"/>
+//     );
+// }
 
 // The video player.
 const VideoPlayer = (props) => {
@@ -65,12 +65,12 @@ const init = async () => {
         );
     }
 
-    if (!accLog.premium) {
-        ReactDOM.render(
-            <Advertisement />,
-            document.getElementById('advertisement')
-        );
-    }
+    // if (!accLog.premium) {
+    //     ReactDOM.render(
+    //         <Advertisement />,
+    //         document.getElementById('advertisement')
+    //     );
+    // }
 
     ReactDOM.render(
         <LoginNav accLog={accLog}/>,
